@@ -1,0 +1,9 @@
+FROM maven:latest AS build
+
+COPY . .
+
+RUN --mount=type=cache,target=/root/.m2 mvn clean package -DskipTests
+
+FROM openjdk:17
+
+COPY --from=build target/*.jar /app.jar

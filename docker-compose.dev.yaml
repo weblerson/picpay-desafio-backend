@@ -1,0 +1,47 @@
+version: "3.5"
+
+services:
+
+  spring:
+    container_name: spring-dev
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    volumes:
+      - maven-volumes:/root.m2
+    depends_on:
+      db:
+        condition: service_healthy
+    command:
+      sh -c "java -Dspring.profiles.active=dev -jar app.jar"
+    ports:
+      - "8080:8080"
+    networks:
+      - spring-network
+
+  db:
+    image: postgres:alpine
+    container_name: db-dev
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    networks:
+      - spring-network
+
+networks:
+  spring-network:
+    name: spring-network
+    driver: bridge
+
+volumes:
+  maven-volumes:
+  postgres:
