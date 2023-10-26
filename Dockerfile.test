@@ -1,0 +1,5 @@
+FROM maven:latest
+
+COPY . .
+
+RUN --mount=type=cache,target=/root/.m2 mvn clean compile

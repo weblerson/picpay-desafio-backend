@@ -1,0 +1,18 @@
+version: "3.5"
+
+services:
+
+  tests:
+    container_name: tests
+    build:
+      context: ./
+      dockerfile: Dockerfile.test
+    volumes:
+      - maven-volumes:/root/.m2
+    command:
+      sh -c "mvn -Dspring.profiles.active=test test"
+    ports:
+      - "8080:8080"
+
+volumes:
+  maven-volumes:
