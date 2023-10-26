@@ -32,11 +32,13 @@ public class UserService {
         return opt.orElseThrow(() -> new DBException("Não existe um usuário com esse Id."));
     }
 
-    public User save(User user) {
+    public UserResponseDTO save(User user) {
 
         try {
 
-            return this.userRepository.save(user);
+            User created = this.userRepository.save(user);
+
+            return new UserResponseDTO(created);
         }
         catch (PersistenceException e) {
 
