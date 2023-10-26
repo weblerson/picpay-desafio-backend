@@ -1,10 +1,9 @@
 package com.challenge.simplepicpay.entities.user;
 
+import com.challenge.simplepicpay.dto.user.UserRequestDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.beans.BeanUtils;
 
 import java.math.BigDecimal;
 
@@ -13,7 +12,8 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @AllArgsConstructor
-@EqualsAndHashCode()
+@NoArgsConstructor
+@EqualsAndHashCode
 public class User {
 
     @Id
@@ -29,6 +29,4 @@ public class User {
     private BigDecimal balance;
     @Enumerated(EnumType.STRING)
     private UserType userType;
-
-    public User() {}
 }
