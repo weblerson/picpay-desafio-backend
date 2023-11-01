@@ -10,6 +10,7 @@ import com.challenge.simplepicpay.interfaces.AuthorizationService;
 import com.challenge.simplepicpay.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -23,6 +24,7 @@ public class TransactionService {
     private final AuthorizationService challengeAuthorizationService;
     private final MyAuthorizationService myAuthorizationService;
     private final NotificationService notificationService;
+    private final CreateTransactionService createTransactionService;
 
     @Autowired
     public TransactionService(
@@ -30,7 +32,8 @@ public class TransactionService {
             UserService userService,
             AuthorizationService challengeAuthorizationService,
             MyAuthorizationService myAuthorizationService,
-            NotificationService notificationService
+            NotificationService notificationService,
+            CreateTransactionService createTransactionService
     ) {
 
         this.userService = userService;
@@ -38,6 +41,7 @@ public class TransactionService {
         this.challengeAuthorizationService = challengeAuthorizationService;
         this.myAuthorizationService = myAuthorizationService;
         this.notificationService = notificationService;
+        this.createTransactionService = createTransactionService;
     }
 
     public TransactionDTO createTransaction(TransactionDTO transaction) {
@@ -63,17 +67,7 @@ public class TransactionService {
             if (! this.myAuthorizationService.authorize(sender, transaction.value()))
                 throw new TransactionException("Transação não autorizada!");
 
-            Transaction createdTransaction = new Transaction();
-            createdTransaction.setAmount(transaction.value());
-            createdTransaction.setSender(sender);
-            createdTransaction.setReceiver(receiver);
-
-            sender.setBalance(sender.getBalance().subtract(transaction.value()));
-            receiver.setBalance(receiver.getBalance().add(transaction.value()));
-
-            this.transactionRepository.save(createdTransaction);
-            this.userService.save(sender);
-            this.userService.save(receiver);
+            this.createTransactionService.doTransaction(transaction, sender, receiver);
 
             this.notificationService.notificate(sender, "Valor enviado para o destinatário.");
             this.notificationService.notificate(receiver, "Valor recebido pelo remetente.");
