@@ -1,17 +1,16 @@
 package com.challenge.simplepicpay.services;
 
-import com.challenge.simplepicpay.dto.user.UserRequestDTO;
 import com.challenge.simplepicpay.dto.user.UserResponseDTO;
 import com.challenge.simplepicpay.entities.user.User;
 import com.challenge.simplepicpay.entities.user.UserType;
-import com.challenge.simplepicpay.exceptions.DBException;
-import com.challenge.simplepicpay.exceptions.TransactionException;
+import com.challenge.simplepicpay.exceptions.*;
 import com.challenge.simplepicpay.repositories.UserRepository;
 import jakarta.persistence.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,7 +28,7 @@ public class UserService {
 
         Optional<User> opt = this.userRepository.findById(id);
 
-        return opt.orElseThrow(() -> new DBException("Não existe um usuário com esse Id."));
+        return opt.orElseThrow(() -> new UserNotFoundException("Não existe um usuário com esse Id."));
     }
 
     public UserResponseDTO save(User user) {
@@ -49,9 +48,18 @@ public class UserService {
     public void validateTransaction(User sender, BigDecimal amount) {
 
         if (sender.getUserType() == UserType.MERCHANT)
-            throw new TransactionException("Usuário não autorizado para efetuar transação.");
+            throw new TransactionNotAllowedException("Usuário não autorizado para efetuar transação.");
 
         if (sender.getBalance().compareTo(amount) < 0)
-            throw new TransactionException("Usuário sem saldo suficiente para realizar a transação.");
+            throw new InsufficientBalanceTransactionException(
+                    "Usuário sem saldo suficiente para realizar a transação."
+            );
+    }
+
+    public List<UserResponseDTO> findAllUsers() {
+
+        List<User> users = this.userRepository.findAll();
+
+        return users.stream().map(UserResponseDTO::new).toList();
     }
 }

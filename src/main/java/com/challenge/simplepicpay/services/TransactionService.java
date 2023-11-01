@@ -11,6 +11,7 @@ import com.challenge.simplepicpay.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -83,5 +84,12 @@ public class TransactionService {
 
             throw new TransactionException(e.getMessage());
         }
+    }
+
+    public List<TransactionDTO> findAllTransactions() {
+
+        List<Transaction> transactions = this.transactionRepository.findAll();
+
+        return transactions.stream().map(TransactionDTO::new).toList();
     }
 }

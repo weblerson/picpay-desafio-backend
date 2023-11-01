@@ -6,10 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/transactions")
@@ -29,5 +28,13 @@ public class TransactionController {
         TransactionDTO created = this.transactionService.createTransaction(request);
 
         return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<TransactionDTO>> listAllTransactions() {
+
+        List<TransactionDTO> transactions = this.transactionService.findAllTransactions();
+
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
 }
