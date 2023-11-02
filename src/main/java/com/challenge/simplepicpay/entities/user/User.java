@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"id", "firstName", "lastName", "document", "email", "password", "userType"})
 public class User {
 
     @Id
