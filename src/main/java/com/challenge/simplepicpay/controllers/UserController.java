@@ -29,7 +29,9 @@ public class UserController {
 
         UserResponseDTO created = this.userService.save(new User(request));
 
-        return ResponseEntity.ok(created);
+        return new ResponseEntity<>(
+                created, HttpStatus.CREATED
+        );
     }
 
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
