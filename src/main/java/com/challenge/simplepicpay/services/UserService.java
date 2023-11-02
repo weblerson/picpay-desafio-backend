@@ -5,8 +5,8 @@ import com.challenge.simplepicpay.entities.user.User;
 import com.challenge.simplepicpay.entities.user.UserType;
 import com.challenge.simplepicpay.exceptions.*;
 import com.challenge.simplepicpay.repositories.UserRepository;
-import jakarta.persistence.PersistenceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -39,7 +39,7 @@ public class UserService {
 
             return new UserResponseDTO(created);
         }
-        catch (PersistenceException e) {
+        catch (InvalidDataAccessApiUsageException e) {
 
             throw new DBException(e.getMessage());
         }
