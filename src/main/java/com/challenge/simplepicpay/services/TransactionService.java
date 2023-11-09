@@ -4,6 +4,7 @@ import com.challenge.simplepicpay.dto.transaction.TransactionDTO;
 import com.challenge.simplepicpay.entities.transaction.Transaction;
 import com.challenge.simplepicpay.entities.user.User;
 import com.challenge.simplepicpay.exceptions.TransactionException;
+import com.challenge.simplepicpay.exceptions.TransactionNotAllowedException;
 import com.challenge.simplepicpay.impl.authorization.ChallengeAuthorizationService;
 import com.challenge.simplepicpay.impl.authorization.MyAuthorizationService;
 import com.challenge.simplepicpay.interfaces.AuthorizationService;
@@ -65,7 +66,7 @@ public class TransactionService {
 //                throw new TransactionException("Transação não autorizada!");
 
             if (! this.myAuthorizationService.authorize(sender, transaction.value()))
-                throw new TransactionException("Transação não autorizada!");
+                throw new TransactionNotAllowedException("Transação não autorizada!");
 
             this.createTransactionService.doTransaction(transaction, sender, receiver);
 
