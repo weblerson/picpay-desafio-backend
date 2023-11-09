@@ -6,6 +6,7 @@ import com.challenge.simplepicpay.entities.user.User;
 import com.challenge.simplepicpay.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -60,7 +61,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Returned all users",
             content = { @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = UserResponseDTO.class)) })
+            array = @ArraySchema(schema = @Schema(implementation = UserResponseDTO.class))) })
     })
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UserResponseDTO>> listAllUsers() {
